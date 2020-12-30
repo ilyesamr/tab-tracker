@@ -15,6 +15,10 @@
     </div>
   </div><br>
 
+     <div class="alert alert-danger" v-html="error" v-show="error">
+
+     </div>
+
    <button @click="register" class="btn btn-primary">S'inscrire</button>
 
    </div>
@@ -22,20 +26,24 @@
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService'
-
 export default {
   data () {
     return {
       email: '',
-      password: ''
+      password: '',
+      error: null
     }
   },
   methods: {
     async register () {
-      await AuthenticationService.register({
-        email: this.email,
-        password: this.password
-      })
+      try {
+        await AuthenticationService.register({
+          email: this.email,
+          password: this.password
+        })
+      } catch (error) {
+        this.error = error.response.data.error
+      }
     }
   }
 }
