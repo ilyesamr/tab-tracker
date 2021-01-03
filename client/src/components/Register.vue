@@ -1,7 +1,8 @@
 <template>
-   <div>
+   <div class="container">
+     <br>
         <h1>Bienvenue dans la page d'inscription</h1>
-
+<form autocomplete="off">
   <div class="form-group row">
     <label class="col-sm-2 col-form-label">Email</label>
     <div class="col-sm-10">
@@ -11,7 +12,7 @@
   <div class="form-group row">
     <label class="col-sm-2 col-form-label">Password</label>
     <div class="col-sm-10">
-      <input type="password" class="form-control-plaintext" name="password" placeholder="Password" v-model="password">
+      <input type="password" class="form-control-plaintext" name="password" placeholder="Password" v-model="password" autocomplete="new-password">
     </div>
   </div><br>
 
@@ -20,7 +21,7 @@
      </div>
 
    <button @click="register" class="btn btn-primary">S'inscrire</button>
-
+</form>
    </div>
 </template>
 
@@ -37,9 +38,14 @@ export default {
   methods: {
     async register () {
       try {
-        await AuthenticationService.register({
+        const response = await AuthenticationService.register({
           email: this.email,
           password: this.password
+        })
+        await this.$store.dispatch('setToken', response.data.token)
+        await this.$store.dispatch('setUser', response.data.user)
+        await this.$router.push({
+          name: 'login'
         })
       } catch (error) {
         this.error = error.response.data.error
@@ -50,5 +56,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
